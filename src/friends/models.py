@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from user_profile.models import User
 from event.models import EventModel
+from rest_framework import serializers
 
 
 class Relation(EventModel):
@@ -17,4 +18,9 @@ class Relation(EventModel):
     def get_descr(self):
 
         return "User "
+
+class RelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Relation
+        fields = ('id', 'user_from', 'user_to', 'start_date', 'are_friends', 'end_date')
 

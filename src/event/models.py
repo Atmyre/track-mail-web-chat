@@ -5,6 +5,7 @@ from django.db import models
 from user_profile.models import User
 from base.models import ModelWithLikes, PublicationModel
 from comment.models import ModelWithComments
+from rest_framework import serializers
 
 
 class EventModel(models.Model):
@@ -33,3 +34,9 @@ class Event(ModelWithLikes, ModelWithComments, PublicationModel):
 
     def message_beginning(self):
         return self.text[:150]
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'text', 'user_to_show', 'published', 
+            'likes_count', 'pub_date', 'mod_date', 'comments_count', 'comments')

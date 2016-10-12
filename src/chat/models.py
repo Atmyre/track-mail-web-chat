@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from user_profile.models import User
+from rest_framework import serializers
 
 class Chat(models.Model):
     name = models.TextField(verbose_name='chat_name')
@@ -18,3 +19,8 @@ class Membership(models.Model):
         on_delete=models.CASCADE,
         related_name="membership_chat_invites",
     )
+
+class ChatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
+        fields = ('name', 'users')

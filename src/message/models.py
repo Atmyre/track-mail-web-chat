@@ -10,8 +10,15 @@ import datetime
 from django.db import models
 from base.models import EmailSenderModel, ModelWithLikes, TextModel
 from comment.models import ModelWithComments
+from rest_framework import serializers
+
 
 
 class Message(ModelWithComments, EmailSenderModel, TextModel, ModelWithLikes):
 
     chat = models.ForeignKey(Chat, null=True, blank=True, verbose_name='message_chat', on_delete=models.CASCADE)
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ('id', 'chat', 'author', 'text', 'likes_count')

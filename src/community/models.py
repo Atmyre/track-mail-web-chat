@@ -5,6 +5,7 @@ from django.db import models
 from user_profile.models import User
 from photo.models import Photo
 from event.models import Event
+from rest_framework import serializers
 
 class Community(models.Model):
     name = models.TextField(verbose_name='community_name')
@@ -23,3 +24,8 @@ class Membership(models.Model):
         on_delete=models.CASCADE,
         related_name="membership_community_invites",
     )
+
+class CommunitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Community
+        fields = ('name', 'users', 'avatar', 'created_at', 'creater', 'events')

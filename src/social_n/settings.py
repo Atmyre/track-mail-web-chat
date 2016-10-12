@@ -129,5 +129,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/tatiana/web_social/collected_static/'
-STATICFILES_DIRS = ('/home/tatiana/web_social/src/static/', )
+STATIC_ROOT = '/home/sonya/TrackMailRu2016-Web/collected_static/'
+STATICFILES_DIRS = ('/home/sonya/TrackMailRu2016-Web/src/static/', )
