@@ -16,6 +16,9 @@ Including another URLconf
 from rest_framework import routers
 import user_profile.views
 import comment.views
+import chat.views
+
+from . import views
 
 from django.conf.urls import url, include
 from django.contrib import admin
@@ -24,6 +27,7 @@ from django.contrib import admin
 router = routers.DefaultRouter()
 router.register(r'users', user_profile.views.UserViewSet)
 router.register(r'comments', comment.views.CommentViewSet)
+router.register(r'chat', chat.views.ChatViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -31,4 +35,5 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^login/', views.login, name='login'),
 ]

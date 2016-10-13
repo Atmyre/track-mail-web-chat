@@ -68,7 +68,7 @@ ROOT_URLCONF = 'social_n.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -114,31 +114,18 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-EMAIL_AUTH_BACKEND = 'users.backend.EmailAuthBackend'
-
 AUTHENTICATION_BACKENDS = (
     'social.backends.vk.VKOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-    EMAIL_AUTH_BACKEND,
 )
 
-SOCIAL_AUTH_PIPELINE = (
-    'social.pipeline.social_auth.social_details',
-    'social.pipeline.social_auth.social_uid',
-    'social.pipeline.social_auth.auth_allowed',
-    'social.pipeline.social_auth.social_user',
-    'social.pipeline.user.get_username',
-    'social.pipeline.social_auth.associate_by_email',
-    #'user_profile.models.create_user_social',
-    'social.pipeline.social_auth.associate_user',
-    'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details',
-)
+
+# SOCIAL_AUTH_PIPELINE = (
 
 SOCIAL_AUTH_VK_OAUTH2_SCORE = ['email', ]
 SOCIAL_AUTH_VK_OAUTH2_EXTRA_DATA = ['email', ]
-SOCIAL_AUTH_VK_OAUTH2_KEY = ''
-SOCIAL_AUTH_VK_OAUTH2_SECRET = ''
+SOCIAL_AUTH_VK_OAUTH2_KEY = '5666968'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'KsranxovgEBuA5IRRdAf'
 
 
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True

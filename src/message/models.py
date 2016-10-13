@@ -1,6 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
-from user_profile.models import User
+from django.contrib.auth.models import User
 from like.models import Like
 from chat.models import Chat
 from django.utils import timezone
@@ -18,7 +18,9 @@ class Message(ModelWithComments, EmailSenderModel, TextModel, ModelWithLikes):
 
     chat = models.ForeignKey(Chat, null=True, blank=True, verbose_name='message_chat', on_delete=models.CASCADE)
 
+
 class MessageSerializer(serializers.ModelSerializer):
+
 	author = serializers.ReadOnlyField(source='author.id')
 
 	class Meta:
