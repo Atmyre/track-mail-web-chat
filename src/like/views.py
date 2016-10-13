@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Like, LikeSerializer
 from rest_framework import viewsets
+from rest_framework import permissions
 
 
 class LikeViewSet(viewsets.ModelViewSet):
@@ -9,4 +10,8 @@ class LikeViewSet(viewsets.ModelViewSet):
     """
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 # Create your views here.

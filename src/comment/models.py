@@ -23,6 +23,8 @@ class ModelWithComments(models.Model):
         self.comments_count = self.comments.count()
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.id')
+
     class Meta:
         model = Comment
-        fields = ('item_id', 'item_type', 'event', 'text', 'author')
+        fields = ('item_type', 'event', 'text', 'author')

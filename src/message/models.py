@@ -19,6 +19,8 @@ class Message(ModelWithComments, EmailSenderModel, TextModel, ModelWithLikes):
     chat = models.ForeignKey(Chat, null=True, blank=True, verbose_name='message_chat', on_delete=models.CASCADE)
 
 class MessageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Message
-        fields = ('id', 'chat', 'author', 'text', 'likes_count')
+	author = serializers.ReadOnlyField(source='author.id')
+
+	class Meta:
+		model = Message
+		fields = ('id', 'chat', 'author', 'text', 'likes_count')

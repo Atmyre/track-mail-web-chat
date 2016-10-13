@@ -9,7 +9,9 @@ class Like(EmailSenderModel):
     author = models.ForeignKey(User, null=False)
 
 class LikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Like
-        fields = ('id', 'author')
+	author = serializers.ReadOnlyField(source='author.id')
+
+	class Meta:
+		model = Like
+		fields = ('id', 'author')
 
