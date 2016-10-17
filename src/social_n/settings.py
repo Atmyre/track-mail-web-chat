@@ -61,8 +61,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
-
+CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = 'social_n.urls'
 
 TEMPLATES = [
@@ -116,11 +117,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'social.backends.vk.VKOAuth2',
+    'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
+MIDDLEWARE_CLASSES = (
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
+)
 
-# SOCIAL_AUTH_PIPELINE = (
 
 SOCIAL_AUTH_VK_OAUTH2_SCORE = ['email', ]
 SOCIAL_AUTH_VK_OAUTH2_EXTRA_DATA = ['email', ]
@@ -130,9 +135,6 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = 'KsranxovgEBuA5IRRdAf'
 
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
 SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
