@@ -7,7 +7,7 @@ from photo.models import Photo
 from rest_framework import serializers
 
 
-
+'''
 def get_image_path(instance, filename):
     return os.path.join('users', str(instance.user.id), 'ava.jpg')
 
@@ -20,9 +20,9 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.user.username
-
+'''
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserProfile
-        fields = ('id', 'user', 'avatar', 'friends')
+        model = User
+        fields = ('id', 'username', 'email')

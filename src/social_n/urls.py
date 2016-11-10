@@ -17,6 +17,7 @@ from rest_framework import routers
 import user_profile.views
 import comment.views
 import chat.views
+import message.views
 from django.conf import settings
 
 from . import views
@@ -31,6 +32,7 @@ router = routers.DefaultRouter()
 router.register(r'users', user_profile.views.UserViewSet)
 router.register(r'comments', comment.views.CommentViewSet)
 router.register(r'chat', chat.views.ChatViewSet)
+router.register(r'message', message.views.MessageViewSet)
 
 # OAuth2 provider endpoints
 oauth2_endpoint_views = [
@@ -57,7 +59,7 @@ if settings.DEBUG:
             name="authorized-token-delete"),
     ]
 
-urlpatterns = [
+urlpatterns = router.urls + [
     url(r'^admin/', admin.site.urls),
     url(r'^api/hello', views.ApiEndpoint.as_view()),
     url(r'^api/', include(router.urls)),
@@ -66,4 +68,5 @@ urlpatterns = [
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(r'^login/', views.login, name='login'),
     url(r'^secret$', views.secret_page, name='secret'),
+    url(r'^socialn/', include('chat.urls')),
 ]

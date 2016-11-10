@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <script src="https://unpcg.com/babel-standalone@6.5.0/babel.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/i18n/jquery-ui-i18n.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>
+
+    {% load staticfiles %}
+    <script type="text/babel" src="{% static "js/message_jsx/app.jsx" %}"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    {% load staticfiles %}
+    <link href="{% static "css/bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+
+    {% load staticfiles %}
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+
+</head>
+<body role="document">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'chat:chats' %}"></a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+             <ul class="nav navbar-nav">
+                <li><a class="navbar-brand" href="{% url 'chat:chats' %}">Home</a></li>
+                <li><a href="{% url 'chat:chats' %}">Messages</a></li>
+             </ul>
+
+
+            <form class="navbar-form navbar-right">
+              <a href="#" class="btn btn-link" role="button">{{ user.username }}</a>
+             </form>
+
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                {% block title %}
+                {% endblock %}
+
+                {% block content %}
+                {% endblock %}
+            </div>
+
+            <div class="col-md-3 col-md-offset-1 blog-sidebar">
+                {%  block fast-navig %}
+                    <div class="sidebar-module">
+                        <div class="btn-group btn-group-justified">
+
+                        </div>
+                    </div>
+                {%  endblock %}
+
+                {% block sidecont %}
+
+                {% endblock %}
+            </div>
+        </div>
+
+    </div>
+
+    {% block footer %}
+        <!-- Footer-->
+        <div id="footer">
+          <div class="container">
+            <p class="text-muted">Stackoverflow 2016-2016
+              <address class="text-muted">
+                <strong>Gainsteva Tatiana: </strong>
+                <a href="mailto:#">killmeplease</a>
+              </address>
+            </p>
+          </div>
+        </div>
+    {% endblock %}
+
+
+</body>
+</html>

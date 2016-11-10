@@ -11,9 +11,13 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REGISTER_URL = os.path.join(BASE_DIR, 'templates/register.html')
+#LOGIN_URL = reverse_lazy('login')
+#LOGOUT_URL = reverse_lazy('logout')
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,6 +44,9 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'oauth2_provider',
     'corsheaders',
+    'webpack_loader',
+    'argonauts',
+    'widget_tweaks',
     'rest_framework',
     'chat',
     'base',
@@ -114,9 +121,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+
+}
+
 
 AUTHENTICATION_BACKENDS = (
     'social.backends.vk.VKOAuth2',
+    #'social.backends.facebook.FacebookOAuth2'
     'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -126,15 +138,35 @@ MIDDLEWARE_CLASSES = (
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
 )
 
+# what to do with an info of concrete user when he has authentificated using social network
+# SOCIAL_AUTH_PIPELINE = ()
 
+
+# -----VK PYTHON-SOCIAL PARAMS-----
+# what we ask fro user to go to vk for info access
 SOCIAL_AUTH_VK_OAUTH2_SCORE = ['email', ]
+# what we ask vk to give to us when we went back to vk with access token got from user
 SOCIAL_AUTH_VK_OAUTH2_EXTRA_DATA = ['email', ]
+
 SOCIAL_AUTH_VK_OAUTH2_KEY = '5666968'
 SOCIAL_AUTH_VK_OAUTH2_SECRET = 'KsranxovgEBuA5IRRdAf'
 
+# -----FACEBOOK PYTHON-SOCIAL PARAMS-----
+# what we ask fro user to go to vk for info access
+SOCIAL_AUTH_FACEBOOK_SCORE = ['email', ]
+# what we ask vk to give to us when we went back to vk with access token got from user
+SOCIAL_AUTH_FACEBOOK_EXTRA_DATA = ['email', ]
+# TODO:
+'''
+SOCIAL_AUTH_FACEBOOK_KEY = '5666968'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'KsranxovgEBuA5IRRdAf'
 
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
 SOCIAL_AUTH_SANITIZE_REDIRECTS = False
+'''
+
+
+
 
 LANGUAGE_CODE = 'en-us'
 
@@ -151,8 +183,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/sonya/TrackMailRu2016-Web/collected_static/'
-STATICFILES_DIRS = ('/home/sonya/TrackMailRu2016-Web/src/static/', )
+STATIC_ROOT = BASE_DIR+'/collected_static/'
+STATICFILES_DIRS = (BASE_DIR+'/static/',
+                    os.path.join(BASE_DIR, 'assets'),)
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    }
+}
+
 
 SITE_URL = ''
 LOGIN_URL = '/login/'

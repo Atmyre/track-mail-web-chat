@@ -1,7 +1,14 @@
 from django.contrib import admin
 from .models import *
 
-@admin.register(Chat)
-class Chatdmin(admin.ModelAdmin):
-    pass
-# Register your models here.
+
+class MembershipInline(admin.TabularInline):
+    model = Membership
+    fk_name = 'chat'
+
+
+class ChatAdmin(admin.ModelAdmin):
+    inlines = (MembershipInline,)
+
+
+admin.site.register(Chat, ChatAdmin)
