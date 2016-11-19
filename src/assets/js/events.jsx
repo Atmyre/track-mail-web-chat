@@ -51,6 +51,5 @@ class EventList extends React.Component {
                 </div>
             </div>
             );
-
     }
 }

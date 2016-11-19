@@ -19,6 +19,7 @@ import comment.views
 import chat.views
 import message.views
 from django.conf import settings
+from rest_framework.authtoken import views as restviews
 
 from . import views
 
@@ -69,4 +70,5 @@ urlpatterns = router.urls + [
     url(r'^login/', views.login, name='login'),
     url(r'^secret$', views.secret_page, name='secret'),
     url(r'^socialn/', include('chat.urls')),
+    url(r'^api-token-auth/', restviews.obtain_auth_token),
 ]

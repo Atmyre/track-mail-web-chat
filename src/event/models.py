@@ -6,6 +6,10 @@ from user_profile.models import User
 from base.models import ModelWithLikes, PublicationModel
 from comment.models import ModelWithComments
 from rest_framework import serializers
+import datetime
+from time import timezone
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class EventModel(models.Model):
@@ -18,11 +22,17 @@ class EventModel(models.Model):
     def get_title(self):
         pass
 
+    def get_repr(self):
+        pass
+
 
 class Event(ModelWithLikes, ModelWithComments, PublicationModel):
     title = models.CharField(max_length=100, verbose_name='event_title', default='none')
     text = models.TextField(verbose_name='event_text')
     user_to_show = models.ForeignKey(User, null=False, verbose_name="user_to_show_event")
+
+    #content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    #content_object = GenericForeignKey('content_type', 'object_id')
 
     published = models.BooleanField(default=True)
 
@@ -33,7 +43,8 @@ class Event(ModelWithLikes, ModelWithComments, PublicationModel):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
     def message_beginning(self):
-        return self.text[:150]
+        return self.text[:50]
+
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:

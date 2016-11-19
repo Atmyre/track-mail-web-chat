@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'argonauts',
     'widget_tweaks',
     'rest_framework',
+    'rest_framework.authtoken',
     'chat',
     'base',
     'community',

@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User, UserManager, AbstractBaseUser
 from photo.models import Photo
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 
 '''
