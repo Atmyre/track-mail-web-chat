@@ -1,15 +1,15 @@
 from django.db.models.signals import post_save
 
 from .models import EventModel, Event
+from .tasks import debug_task
+from django.contrib.contenttypes.models import ContentType
 
 
-def create_event(instance):
-    e = Event()
-    e.user_to_show = instance.get_author()
-    e.title = instance.get_title()
-    e.published = True
-    #e.content_object = instance
+def create_event(sender, **kwargs):
+    print(sender)
+    debug_task.apply_async(args=[kwargs.get('instance').id, ContentType.objects.get_for_model(sender).id, kwargs.get('instance').author.id ])
 
 
-for model in EventModel.__subclasses__:
-    post_save.connect(create_event, model)
+def init_signals():
+    for model in EventModel.__subclasses__():
+        post_save.connect(create_event, sender=model)

@@ -5,5 +5,7 @@ from django.apps import AppConfig
 
 class MessageConfig(AppConfig):
     name = 'message'
+
     def ready(self):
-        import signals
+        from .signals import init_signals
+        init_signals()

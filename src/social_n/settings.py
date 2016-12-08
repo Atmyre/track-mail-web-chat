@@ -19,7 +19,6 @@ REGISTER_URL = os.path.join(BASE_DIR, 'templates/register.html')
 #LOGIN_URL = reverse_lazy('login')
 #LOGOUT_URL = reverse_lazy('logout')
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -49,11 +48,13 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'rest_framework',
     'rest_framework.authtoken',
+    'adjacent',
     'chat',
     'base',
     'community',
     'event',
     'friends',
+    'login',
     'like',
     'message',
     'photo',
@@ -61,7 +62,13 @@ INSTALLED_APPS = [
     'comment',
 ]
 
+CENTRIFUGE_ADDRESS = 'http://centrifuge.example.com'
+CENTRIFUGE_SECRET = 'your secret key from Centrifugo'
+CENTRIFUGE_TIMEOUT = 10
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    #'django.middleware.common.CommonMiddleware'
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,7 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'login.middleware.UpdateLastActivityMiddleware',
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = 'social_n.urls'
@@ -85,10 +92,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'adjacent.context_processors.main',
             ],
         },
     },
 ]
+
+CENTRIFUGE_ADDRESS = 'http://localhost:8000'
+CENTRIFUGE_SECRET = 'fd95d9fd-2f06-4e5c-86c9-96a89fc5d37f'
+CENTRIFUGE_TIMEOUT = 10
 
 WSGI_APPLICATION = 'social_n.wsgi.application'
 
@@ -134,10 +146,13 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
+    'login.middleware.UpdateLastActivityMiddleware',
 )
+
 
 # what to do with an info of concrete user when he has authentificated using social network
 # SOCIAL_AUTH_PIPELINE = ()
@@ -188,6 +203,30 @@ STATIC_ROOT = BASE_DIR+'/collected_static/'
 STATICFILES_DIRS = (BASE_DIR+'/static/',
                     os.path.join(BASE_DIR, 'assets'),)
 
+
+from celery.schedules import crontab
+
+CELERY_IMPORTS = (
+    'message.tasks',
+    'event.tasks',
+)
+
+# celery
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_CACHE_BACKEND = 'redis://localhost:6379/1'
+#CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+CELERYBEAT_SCHEDULE = {
+    'every-minute': {
+        'task': 'message.tasks.send_lost_messages_notification',
+        'schedule': crontab(minute='*/1'),
+        'args': (),
+    },
+}
+
+
+
+
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',
@@ -200,3 +239,10 @@ SITE_URL = ''
 LOGIN_URL = '/login/'
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = SITE_URL + '/'
+
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'atmyre@yandex.ru'
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']

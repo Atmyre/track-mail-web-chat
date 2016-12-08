@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 
-from . import EmailSenderModel, ModelWithComment
+from .models import EmailSenderModel, ModelWithComment
 
 
 def send_email(instance, created=False):

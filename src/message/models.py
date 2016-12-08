@@ -8,12 +8,12 @@ from django.utils.encoding import python_2_unicode_compatible
 import datetime
 
 from django.db import models
-from base.models import EmailSenderModel, ModelWithLikes, TextModel
+from base.models import EmailSenderModel, ModelWithLikes, TextModel, PublicationModel
 from comment.models import ModelWithComments
 from rest_framework import serializers
 
 
-class Message(ModelWithComments, EmailSenderModel, TextModel, ModelWithLikes):
+class Message(ModelWithComments, EmailSenderModel, TextModel, ModelWithLikes, PublicationModel):
 
     chat = models.ForeignKey(Chat, null=True, blank=True, verbose_name='message_chat', on_delete=models.CASCADE)
 
@@ -24,4 +24,4 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ('pk', 'chat', 'author', 'text', 'likes_count')
+        fields = ('pk', 'chat', 'author', 'text', 'likes_count', 'pub_date')

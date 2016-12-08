@@ -6,46 +6,33 @@
 {% load widget_tweaks %}
 {% load static %}
 
+{% block js %}
+    <script src="//cdn.jsdelivr.net/sockjs/1.0/sockjs.min.js" type="text/javascript"></script>
+    <script src="{% static 'js/centrifuge.js' %}"></script>
+{% endblock %}
+
 {% block title %}
 {%  endblock %}
 
 {%  block content %}
 
+{% if  user.is_authenticated %}
 
-    <!--
-    {% if chat %}
-      {% for message in messages %}
-            <div id="container">
-            <h4>{{ message.text }}</h4>
-            </div>
-      {% endfor %}
-
-        <form class="form-horizontal" action="{% url 'chat:post_message' %}" method="post">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label class="control-label col-md-1">Text: </label>
-                <div class="col-md-9">
-                    {{ form.text|add_class:"form-control" }}
-                </div>
-                <input id="chat" type="hidden" name="chat" value={{ message.chat }}>
-            </div>
-
-            <div class="form-group">
-            <div class="col-md-offset-1 col-md-9">
-              <input type="submit" class="b-wall" value="Отправить">
-            </div>
-
-          </div>
-        </form>
-
-    {% endif %}
-    -->
-
-  <div id="container"></div>
+  <div id="container" class="container"
+        data-cent-url="{{ CENTRIFUGE_SOCKJS_ENDPOINT }}"
+        data-cent-user="{{ CENTRIFUGE_USER }}"
+        data-cent-ts="{{ CENTRIFUGE_TIMESTAMP }}"
+        data-cent-info="{{ CENTRIFUGE_INFO }}"
+        data-cent-token="{{ CENTRIFUGE_TOKEN }}"
+  ></div>
+    {% csrf_token %}
     {% render_bundle 'messages' %}
 
+{% else %}
 
+    <p> Sorry, only authorized users are able to view this page </p>
+
+{% endif %}
 
 
 {% endblock %}

@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from time import timezone
+from django.utils import timezone
 import datetime
 
 
@@ -12,8 +12,8 @@ class PublicationModel(models.Model):
     class Meta:
         abstract = True
 
-    pub_date = models.DateTimeField(verbose_name='creation_date', auto_now_add=True)
-    mod_date = models.DateTimeField(verbose_name='modification_date', auto_now=True)
+    pub_date = models.DateTimeField(verbose_name='creation_date', default=timezone.now)
+    mod_date = models.DateTimeField(verbose_name='modification_date', default=timezone.now)
 
 
 class EmailSenderModel(models.Model):

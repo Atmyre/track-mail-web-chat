@@ -28,22 +28,28 @@ class EventModel(models.Model):
 
 class Event(ModelWithLikes, ModelWithComments, PublicationModel):
     title = models.CharField(max_length=100, verbose_name='event_title', default='none')
-    text = models.TextField(verbose_name='event_text')
     user_to_show = models.ForeignKey(User, null=False, verbose_name="user_to_show_event")
 
-    #content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    #content_object = GenericForeignKey('content_type', 'object_id')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     published = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.text
+        return str(self.pub_date)
 
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
     def message_beginning(self):
         return self.text[:50]
+
+    def get_descr(self):
+        mod = ContentType.get_object_for_this_type(self.content_type, id=self.object_id)
+        print(mod.get_descr())
+        #if self.content_object.get_content_type() == ''
+        return mod.get_descr()
 
 
 class EventSerializer(serializers.ModelSerializer):

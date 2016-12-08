@@ -5,5 +5,8 @@ from django.apps import AppConfig
 
 class EventConfig(AppConfig):
     name = 'event'
+
     def ready(self):
-        import signals
+        from .signals import init_signals
+        init_signals()
+

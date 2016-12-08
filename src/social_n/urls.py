@@ -67,8 +67,9 @@ urlpatterns = router.urls + [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    url(r'^login/', views.login, name='login'),
+    url(r'^login/', include('login.urls')),
     url(r'^secret$', views.secret_page, name='secret'),
     url(r'^socialn/', include('chat.urls')),
+    url(r'^events/', include('event.urls')),
     url(r'^api-token-auth/', restviews.obtain_auth_token),
 ]

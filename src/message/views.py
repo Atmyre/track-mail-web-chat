@@ -15,10 +15,10 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        chat_id = self.request.GET['chat_id']
-        if chat_id:
-            qs = qs.filter(chat_id=chat_id)
+        if 'chat_id' in self.request.GET:
+            qs = qs.filter(chat_id=self.request.GET['chat_id'])
         return qs
 
     def perform_create(self, serializer):
+        print("REQUEST: ", self.request)
         serializer.save(author=self.request.user)

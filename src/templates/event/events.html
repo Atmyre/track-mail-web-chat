@@ -1,0 +1,9 @@
+{% extends "social_n/base.html" %}
+{% load static argonauts %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% for event in latest_events_list %}
+    {{ event }}
+{% endfor %}

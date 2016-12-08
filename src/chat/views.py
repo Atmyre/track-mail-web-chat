@@ -25,11 +25,12 @@ class ChatView(generic.CreateView):
 
     def dispatch(self, request, pk=None, *args, **kwargs):
 
+        if not request.user.is_authenticated:
+            return render(request, 'login/login.html', {'redirect_to': request.get_full_path})
+
         self.chat = None
 
-        #chat_id = request.GET.get('chat_id', None)
         self.chat_id=pk
-
 
         if self.chat_id is not None:
             membership = get_object_or_404(Membership.objects.all(), user_chat_id=self.chat_id, user=request.user)
@@ -46,7 +47,12 @@ class ChatView(generic.CreateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
+
+        if not self.request.user.is_authenticated:
+            return context
+
         context['chat'] = self.chat
         context['chats'] = self.chats
         context['chat_id'] = self.request.GET.get('chat_id', None)
@@ -79,6 +85,11 @@ class ChatViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         qs = super().get_queryset()
         qs = qs.filter(users=self.request.user)
+
+        name = self.request.GET.get('name')
+        if name:
+            qs = qs.filter(name__icontains=name)
+
         return qs
 
     def perform_create(self, serializer):

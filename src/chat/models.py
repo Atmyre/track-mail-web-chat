@@ -15,9 +15,13 @@ class Chat(models.Model):
         through='Membership',
         through_fields=('chat', 'user'),
     )
+
     author = models.ForeignKey(User, related_name='chats')
 
     creation_date = models.DateTimeField(verbose_name='chat_creation_time', auto_now_add=True)
+
+    def get_channel_name(self):
+        return "chat-channel-{}".format(self.id)
 
 
 class Membership(models.Model):
@@ -32,6 +36,9 @@ class Membership(models.Model):
 
 
 class ChatSerializer(serializers.ModelSerializer):
+
+    channel_name = serializers.ReadOnlyField(source="get_channel_name")
+
     class Meta:
         model = Chat
-        fields = ('pk', 'name', 'users', 'author')
+        fields = ('pk', 'name', 'users', 'author', 'channel_name')
