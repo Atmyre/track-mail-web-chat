@@ -3,7 +3,13 @@
 
 {% load widget_tweaks %}
 {% load static %}
+{% load cache %}
 
-{% for event in latest_events_list %}
-    {{ event }}
-{% endfor %}
+
+{%  block content %}
+    {% for event in events_to_show %}
+
+            <div>{{ event }}</div>
+
+    {% endfor %}
+{% endblock %}

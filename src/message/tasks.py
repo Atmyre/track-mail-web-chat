@@ -24,4 +24,4 @@ def send_lost_messages_notification(self):
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Calls test('hello') every 10 seconds.
-    sender.add_periodic_task(60.0, send_lost_messages_notification.s(), name="send_lost_messages_notification")
+    sender.add_periodic_task(1000.0, send_lost_messages_notification.s(), name="send_lost_messages_notification")

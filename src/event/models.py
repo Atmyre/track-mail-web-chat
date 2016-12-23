@@ -10,6 +10,10 @@ import datetime
 from time import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.utils.cache import caches
+
+
+cache = caches['default']
 
 
 class EventModel(models.Model):
@@ -43,17 +47,22 @@ class Event(ModelWithLikes, ModelWithComments, PublicationModel):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
     def message_beginning(self):
-        return self.text[:50]
+        return self. get_descr()[:50]
+
+    def get_descr_cache_key(self):
+        return "event_{}_descr".format(self.id)
 
     def get_descr(self):
-        mod = ContentType.get_object_for_this_type(self.content_type, id=self.object_id)
-        print(mod.get_descr())
-        #if self.content_object.get_content_type() == ''
-        return mod.get_descr()
+        cache_key = self.get_descr_cache_key()
+        descr = cache.get(cache_key)
+        if not descr:
+            descr = ContentType.get_object_for_this_type(self.content_type, id=self.object_id).get_descr()
+            cache.set(cache_key, descr, 5)
+        return descr
 
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ('id', 'title', 'text', 'user_to_show', 'published', 
+        fields = ('id', 'title', 'user_to_show', 'published',
             'likes_count', 'pub_date', 'mod_date', 'comments_count', 'comments')

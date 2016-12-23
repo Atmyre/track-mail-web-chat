@@ -5,8 +5,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from django.contrib import admin
-
 
 class Chat(models.Model):
     name = models.TextField(verbose_name='chat_name')

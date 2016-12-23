@@ -22,6 +22,7 @@ class ModelWithComments(models.Model):
     def recalculate_comments_count(self):
         self.comments_count = self.comments.count()
 
+
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.id')
 

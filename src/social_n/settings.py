@@ -66,6 +66,13 @@ CENTRIFUGE_ADDRESS = 'http://centrifuge.example.com'
 CENTRIFUGE_SECRET = 'your secret key from Centrifugo'
 CENTRIFUGE_TIMEOUT = 10
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     #'django.middleware.common.CommonMiddleware'
@@ -215,6 +222,7 @@ CELERY_IMPORTS = (
 BROKER_URL = 'redis://localhost:6379/0'
 CELERY_CACHE_BACKEND = 'redis://localhost:6379/1'
 #CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_ALWAYS_EAGER = True
 
 CELERYBEAT_SCHEDULE = {
     'every-minute': {
