@@ -18,3 +18,10 @@ celery -A social_n worker -l info --beat
 ------------------
 ### start centrifugo:
 ./centrifugo --admin --web
+
+### tutorials:
+django oauth tutorial: 
+http://django-oauth-toolkit.readthedocs.io/en/latest/tutorial/tutorial_01.html
+react configuration tutorial: 
+http://geezhawk.github.io/using-react-with-django-rest-framework , 
+http://djbook.ru/examples/75/
