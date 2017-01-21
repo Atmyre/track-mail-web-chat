@@ -1,0 +1,126 @@
+Давайте, для примера, возьмем модель с постами. Она может выглядет примерно так:
+ 
+# models.py
+class Post(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Пользователь')
+    title = models.CharField('Тема', max_length=256)
+    text = models.TextField('Описание')
+    created_at = models.DateTimeField('Дата добавления', auto_now_add=True)
+ 
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
+ 
+ 
+Напомню, что, после того, как вы прикрутили django rest framework к своему проекту, вы должны иметь что-то вроде этого:
+ 
+# urls.py
+from django.conf.urls import url, include
+from django.contrib import admin
+from rest_framework import routers
+ 
+from blog import views as blog_views
+ 
+router = routers.DefaultRouter()
+router.register(r'posts', blog_views.PostViewSet)
+ 
+urlpatterns = [
+    url(r'^api/', include(router.urls)),
+    url(r'^admin/', admin.site.urls),
+]
+ 
+ 
+# serializers.py
+from rest_framework import serializers
+from blog.models import Post
+ 
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('author', 'title', 'created_at', 'text')
+ 
+ 
+# views.py
+from rest_framework import viewsets
+from blog.models import Post
+from blog.serializers import PostSerializer
+ 
+class PostViewSet(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+ 
+ 
+Итак, первое, что нам необходимо сделать, это при создании поста в поле Post.author записывать текущего юзера. Для этого нужно переопределить метод perform_create в нашей вьюхе:
+ 
+# views.py
+class PostViewSet(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+ 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+ 
+ 
+Так как Post.author будет выставляться автоматически, его нужно сделать ReadOnly в нашем сериалайзере:
+ 
+# serializers.py
+from rest_framework import serializers
+from blog.models import Post
+ 
+class PostSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.id')
+ 
+    class Meta:
+        model = Post
+        fields = ('author', 'title', 'created_at', 'text')
+ 
+ 
+Теперь мы можем настроить ограниение прав на чтение и редактирование постов. К примеру, мы хотим дать доступ на редактирование только авторам поста и админам, а на чтение —всем авторизованным юзерам.
+Сделать это можно, определив поле permission_classes у вьюхи. Это должен быть массив специальных классов, унаследованных от rest_framework.permissions.BasePermission. В них определены 2 метода: has_permission и has_object_permission. Оба этих метода возвращают True/False и проверяются по цепочке у всех permission_classes. has_object_permission проверяется, только если мы имеем дело с конкретным объектом (к примеру, при редактировании или просмотре поста).
+Для проверки на авторизацию, мы можем воспользоваться готовым классом permissions.IsAuthenticated, а вот для ограничения доступа на редактирование придется написать свой:
+ 
+# permissions.py
+from rest_framework import permissions
+ 
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+ 
+        return obj.author == request.user or request.user.is_staff
+ 
+ 
+Далее просто добавим пермишны в PostViewSet:
+ 
+# views.py
+from blog.permissions import IsOwnerOrReadOnly
+ 
+class PostViewSet(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+ 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+ 
+ 
+Теперь осталось только добавить фильтрацию. Давайте реализуем фильтрацию по юзеру. Вполне типичная задача для соцсети: посмотреть посты конкретного пользователя.
+Сейчас наша вьюха отдает все посты согласно настройке queryset = Post.objects.all(). Нам нужно изменить это поведение. Сделать это можно, переопределив метод get_queryset():
+ 
+# views.py
+class PostViewSet(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+ 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.request.query_params.get('username'):
+            qs = qs.filter(author__username=self.request.query_params.get('username'))
+        return qs
+ 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+ 
+ 
+Все просто. Мы достаем из реквеста GET-параметр 'username' и фильтруем исходный кверисет по нему.
